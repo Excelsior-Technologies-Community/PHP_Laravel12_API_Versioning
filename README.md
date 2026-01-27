@@ -8,6 +8,7 @@ composer create-project laravel/laravel PHP_Laravel12_API_Versioning
  <img width="980" height="265" alt="image" src="https://github.com/user-attachments/assets/5256eed7-c736-4a0e-b668-1eb00ea9720a" />
 
 # Step 3: Create Two Controller
+Run Command For Terminal
 ```php
 php artisan make:controller Api/V1/ProductController
 php artisan make:controller Api/V2/ProductController
