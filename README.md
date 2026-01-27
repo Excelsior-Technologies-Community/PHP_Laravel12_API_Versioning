@@ -87,10 +87,15 @@ php artisan serve
 # Test This url For Postman
 
 # Open Postman and select Get Method and paste this url then click send button
+```php
+http://127.0.0.1:8000/api/v1/products
+```
+
 <img width="628" height="184" alt="image" src="https://github.com/user-attachments/assets/589ca34e-dc00-4dd8-b74e-345b73850fd1" />
 
- 
- 
+ ```php
+ http://127.0.0.1:8000/api/v2/products
+```
 <img width="628" height="184" alt="image" src="https://github.com/user-attachments/assets/e28bb45a-62eb-4ba7-b967-a1936eeaf39f" />
 
 
