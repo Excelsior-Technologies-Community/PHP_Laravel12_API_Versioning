@@ -1,59 +1,96 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PHP_Laravel12_API_Versioning
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Step 1: Install Laravel 12
+```php
+composer create-project laravel/laravel PHP_Laravel12_API_Versioning
+```
+# Step 2: Setup Project Folder
+ <img width="980" height="265" alt="image" src="https://github.com/user-attachments/assets/5256eed7-c736-4a0e-b668-1eb00ea9720a" />
 
-## About Laravel
+# Step 3: Create Two Controller
+```php
+php artisan make:controller Api/V1/ProductController
+php artisan make:controller Api/V2/ProductController
+```
+# app/Http/Controllers/Api/V1/ProductController.php
+```php
+<?php
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+namespace App\Http\Controllers\Api\V1;
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+class ProductController extends Controller
+{
+    public function index()
+    {
+        return response()->json([
+            'version' => 'v1',
+            'products' => [
+                ['id' => 1, 'name' => 'Laptop V1'],
+            ]
+        ]);
+    }
+}
 
-## Learning Laravel
+```
+# app/Http/Controllers/Api/V2/ProductController.php
+```php
+<?php
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+namespace App\Http\Controllers\Api\V2;
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
-## Laravel Sponsors
+class ProductController extends Controller
+{
+    public function index()
+    {
+        return response()->json([
+            'version' => 'v2',
+            'products' => [
+                ['id' => 1, 'name' => 'Laptop V2'],
+                ['id' => 2, 'name' => 'Mobile V2'],
+            ]
+        ]);
+    }
+}
+```
+# Step 4:  Create Api Route for routes/api.php file
+```php
+<?php
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\ProductController as ProductV1;
+use App\Http\Controllers\Api\V2\ProductController as ProductV2;
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Route::prefix('v1')->group(function () {
+    Route::get('products', [ProductV1::class, 'index']);
+});
 
-### Premium Partners
+Route::prefix('v2')->group(function () {
+    Route::get('products', [ProductV2::class, 'index']);
+});
+```
+# Step 5: Defining api.php routes for bootstrap/app.php
+```php
+ api: __DIR__.'/../routes/api.php',  Added This
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Step 6: Run This Server
+```php
 
-## Contributing
+php artisan serve
+```
+# Test This url For Postman
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Open Postman and select Get Method and paste this url then click send button
+<img width="628" height="184" alt="image" src="https://github.com/user-attachments/assets/589ca34e-dc00-4dd8-b74e-345b73850fd1" />
 
-## Code of Conduct
+ 
+ 
+<img width="628" height="184" alt="image" src="https://github.com/user-attachments/assets/e28bb45a-62eb-4ba7-b967-a1936eeaf39f" />
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
