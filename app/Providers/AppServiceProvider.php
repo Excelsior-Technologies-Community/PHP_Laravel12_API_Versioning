@@ -19,6 +19,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (config('database.default') === 'mysql') {
+            try {
+                \Illuminate\Support\Facades\DB::connection()->getPdo();
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Config::set('database.default', 'sqlite');
+                \Illuminate\Support\Facades\Config::set('database.connections.sqlite.database', database_path('database.sqlite'));
+            }
+        }
     }
 }
