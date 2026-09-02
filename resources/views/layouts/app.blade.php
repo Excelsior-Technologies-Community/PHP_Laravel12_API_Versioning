@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" x-data="{ dark: false }" :class="dark ? 'dark' : ''">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Laravel') }} — API Dashboard</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>[x-cloak] { display: none !important; }</style>
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
     <script>
-        window.addEventListener('pageshow', function (event) {
+        window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
                 window.location.reload();
             }
@@ -16,6 +21,7 @@
     </script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
+
 <body x-init="$watch('dark', value => {
         localStorage.setItem('theme', value ? 'dark' : 'light');
         document.documentElement.classList.toggle('dark', value);
@@ -35,15 +41,22 @@
                         </div>
                         <div class="hidden sm:-mb-px sm:ml-6 sm:flex sm:space-x-8">
                             <a href="{{ route('dashboard') }}"
-                               class="{{ request()->routeIs('dashboard') ? 'border-blue-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}
+                                class="{{ request()->routeIs('dashboard') ? 'border-blue-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}
                                           inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                                 Dashboard
                             </a>
                             <a href="{{ route('products.index') }}"
-                               class="{{ request()->routeIs('products.*') ? 'border-blue-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}
+                                class="{{ request()->routeIs('products.*') ? 'border-blue-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}
                                           inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                                 Products
                             </a>
+<a href="{{ route('api.versions.page') }}"
+    class="{{ request()->routeIs('api.versions.page')
+        ? 'border-blue-500 text-gray-900 dark:text-white'
+        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}
+        inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+    API Versions
+</a>
                         </div>
                     </div>
                     <div class="flex items-center sm:ml-6 sm:pl-4">
@@ -75,4 +88,5 @@
 
     @stack('scripts')
 </body>
+
 </html>

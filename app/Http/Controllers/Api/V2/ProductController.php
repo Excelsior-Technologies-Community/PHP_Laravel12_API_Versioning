@@ -14,20 +14,34 @@ class ProductController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $products = Product::when($request->filled('search'), function ($query) use ($request) {
-            $query->where('name', 'like', '%'.$request->input('search').'%')
-                ->orWhere('sku', 'like', '%'.$request->input('search').'%');
-        })
+        $products = Product::query()
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->input('search');
+
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('sku', 'like', '%' . $search . '%');
+                });
+            })
             ->when($request->filled('is_active'), function ($query) use ($request) {
-                $query->where('is_active', $request->boolean('is_active'));
+                $query->where(
+                    'is_active',
+                    $request->boolean('is_active')
+                );
             })
             ->when($request->filled('category'), function ($query) use ($request) {
-                $query->where('category', $request->input('category'));
+                $query->where(
+                    'category',
+                    $request->input('category')
+                );
             })
-            ->paginate($request->get('per_page', 15));
+            ->paginate(
+                $request->get('per_page', 15)
+            );
 
         return response()->json([
             'version' => 'v2',
+            'status' => 'current',
             'data' => ProductResource::collection($products),
             'pagination' => [
                 'current_page' => $products->currentPage(),
@@ -44,6 +58,7 @@ class ProductController extends Controller
 
         return response()->json([
             'version' => 'v2',
+            'status' => 'current',
             'message' => 'Product created successfully',
             'data' => new ProductResource($product),
         ], 201);
@@ -53,18 +68,22 @@ class ProductController extends Controller
     {
         return response()->json([
             'version' => 'v2',
+            'status' => 'current',
             'data' => new ProductResource($product),
         ]);
     }
 
-    public function update(UpdateProductRequest $request, Product $product): JsonResponse
-    {
+    public function update(
+        UpdateProductRequest $request,
+        Product $product
+    ): JsonResponse {
         $product->update($request->validated());
 
         return response()->json([
             'version' => 'v2',
+            'status' => 'current',
             'message' => 'Product updated successfully',
-            'data' => new ProductResource($product),
+            'data' => new ProductResource($product->fresh()),
         ]);
     }
 
@@ -72,10 +91,6 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        return response()->json([
-            'version' => 'v2',
-            'message' => 'Product deleted successfully',
-            'data' => null,
-        ], 204);
+        return response()->json([], 204);
     }
 }
