@@ -14,16 +14,25 @@ class ProductController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $products = Product::paginate($request->get('per_page', 15));
+        $products = Product::paginate(
+            $request->get('per_page', 15)
+        );
 
         return response()->json([
             'version' => 'v1',
+            'status' => 'deprecated',
+            'message' => 'V1 is deprecated. Please migrate to V2.',
             'data' => ProductResource::collection($products),
             'pagination' => [
                 'current_page' => $products->currentPage(),
                 'last_page' => $products->lastPage(),
                 'per_page' => $products->perPage(),
                 'total' => $products->total(),
+            ],
+            'migration' => [
+                'latest_version' => 'v2',
+                'endpoint' => url('/api/v2/products'),
+                'sunset_at' => '2027-01-01',
             ],
         ]);
     }
@@ -34,8 +43,13 @@ class ProductController extends Controller
 
         return response()->json([
             'version' => 'v1',
-            'message' => 'Product created successfully',
+            'status' => 'deprecated',
+            'message' => 'Product created successfully. Note: V1 is deprecated.',
             'data' => new ProductResource($product),
+            'migration' => [
+                'latest_version' => 'v2',
+                'endpoint' => url('/api/v2/products'),
+            ],
         ], 201);
     }
 
@@ -43,18 +57,30 @@ class ProductController extends Controller
     {
         return response()->json([
             'version' => 'v1',
+            'status' => 'deprecated',
             'data' => new ProductResource($product),
+            'migration' => [
+                'latest_version' => 'v2',
+                'endpoint' => url('/api/v2/products/' . $product->id),
+            ],
         ]);
     }
 
-    public function update(UpdateProductRequest $request, Product $product): JsonResponse
-    {
+    public function update(
+        UpdateProductRequest $request,
+        Product $product
+    ): JsonResponse {
         $product->update($request->validated());
 
         return response()->json([
             'version' => 'v1',
-            'message' => 'Product updated successfully',
+            'status' => 'deprecated',
+            'message' => 'Product updated successfully. Note: V1 is deprecated.',
             'data' => new ProductResource($product),
+            'migration' => [
+                'latest_version' => 'v2',
+                'endpoint' => url('/api/v2/products/' . $product->id),
+            ],
         ]);
     }
 
@@ -62,10 +88,6 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        return response()->json([
-            'version' => 'v1',
-            'message' => 'Product deleted successfully',
-            'data' => null,
-        ], 204);
+        return response()->json([], 204);
     }
 }

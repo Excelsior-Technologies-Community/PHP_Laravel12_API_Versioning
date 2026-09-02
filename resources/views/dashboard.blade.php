@@ -1,227 +1,594 @@
 @extends('layouts.app')
 
 @section('content')
-<div x-data="dashboard()" x-init="init()" class="space-y-6">
-    <!-- Health Check Card -->
+
+<div
+    x-data="dashboard()"
+    x-init="init()"
+    class="space-y-6"
+>
+
+    <!-- API Version Status -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                    API Version Management
+                </h1>
+
+                <p class="text-gray-500 dark:text-gray-400 mt-1">
+                    Monitor API versions, deprecation status and migration timelines.
+                </p>
+            </div>
+
+            <div class="px-4 py-2 rounded-lg bg-green-100 dark:bg-green-900/30">
+                <span class="text-sm font-semibold text-green-700 dark:text-green-300">
+                    Current Version:
+                    <span x-text="currentVersion"></span>
+                </span>
+            </div>
+
+        </div>
+
+        <!-- Version Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- V1 -->
+            <div class="rounded-xl border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20 p-5">
+
+                <div class="flex items-center justify-between mb-4">
+
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                            V1
+                        </h2>
+
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            Legacy API
+                        </p>
+                    </div>
+
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300">
+                        Deprecated
+                    </span>
+
+                </div>
+
+                <div class="space-y-3 text-sm">
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 dark:text-gray-400">
+                            Released
+                        </span>
+
+                        <span class="font-medium text-gray-900 dark:text-white">
+                            Aug 1, 2026
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 dark:text-gray-400">
+                            Sunset
+                        </span>
+
+                        <span class="font-medium text-red-600 dark:text-red-400">
+                            Jan 1, 2027
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 dark:text-gray-400">
+                            Migration
+                        </span>
+
+                        <span class="font-medium text-blue-600 dark:text-blue-400">
+                            V2
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="mt-5 p-3 rounded-lg bg-white/70 dark:bg-gray-800/50">
+                    <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                        ⚠ V1 is deprecated. Existing clients should migrate to V2 before the sunset date.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- V2 -->
+            <div class="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-5">
+
+                <div class="flex items-center justify-between mb-4">
+
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                            V2
+                        </h2>
+
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            Current API
+                        </p>
+                    </div>
+
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300">
+                        Current
+                    </span>
+
+                </div>
+
+                <div class="space-y-3 text-sm">
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 dark:text-gray-400">
+                            Released
+                        </span>
+
+                        <span class="font-medium text-gray-900 dark:text-white">
+                            Sep 1, 2026
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 dark:text-gray-400">
+                            Status
+                        </span>
+
+                        <span class="font-medium text-green-600 dark:text-green-400">
+                            Recommended
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 dark:text-gray-400">
+                            Migration
+                        </span>
+
+                        <span class="font-medium text-gray-900 dark:text-white">
+                            —
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="mt-5 p-3 rounded-lg bg-white/70 dark:bg-gray-800/50">
+                    <p class="text-sm text-green-800 dark:text-green-200">
+                        ✓ V2 is the latest and recommended API version.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Version Lifecycle -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+            API Version Lifecycle
+        </h2>
+
+        <div class="relative">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Released -->
+                <div class="text-center">
+
+                    <div class="mx-auto w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                        <span class="text-blue-600 dark:text-blue-400 font-bold">
+                            1
+                        </span>
+                    </div>
+
+                    <h3 class="mt-3 font-semibold text-gray-900 dark:text-white">
+                        Released
+                    </h3>
+
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        API version becomes available.
+                    </p>
+
+                </div>
+
+                <!-- Deprecated -->
+                <div class="text-center">
+
+                    <div class="mx-auto w-12 h-12 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                        <span class="text-yellow-600 dark:text-yellow-400 font-bold">
+                            2
+                        </span>
+                    </div>
+
+                    <h3 class="mt-3 font-semibold text-gray-900 dark:text-white">
+                        Deprecated
+                    </h3>
+
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Clients are encouraged to migrate.
+                    </p>
+
+                </div>
+
+                <!-- Sunset -->
+                <div class="text-center">
+
+                    <div class="mx-auto w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                        <span class="text-red-600 dark:text-red-400 font-bold">
+                            3
+                        </span>
+                    </div>
+
+                    <h3 class="mt-3 font-semibold text-gray-900 dark:text-white">
+                        Sunset
+                    </h3>
+
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Version is scheduled for retirement.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Version Information -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+
+        <div class="flex items-center justify-between mb-4">
+
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    API Version Information
+                </h2>
+
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Data loaded from the version management API.
+                </p>
+            </div>
+
+            <button
+                @click="fetchVersions()"
+                class="px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
+            >
+                Refresh
+            </button>
+
+        </div>
+
+        <div
+            x-show="loadingVersions"
+            class="py-8 text-center text-gray-500 dark:text-gray-400"
+        >
+            Loading version information...
+        </div>
+
+        <div
+            x-show="!loadingVersions"
+            x-cloak
+            class="overflow-x-auto"
+        >
+
+            <table class="w-full text-sm">
+
+                <thead class="bg-gray-50 dark:bg-gray-700/50">
+
+                    <tr>
+
+                        <th class="text-left px-4 py-3 text-gray-500 dark:text-gray-300">
+                            Version
+                        </th>
+
+                        <th class="text-left px-4 py-3 text-gray-500 dark:text-gray-300">
+                            Status
+                        </th>
+
+                        <th class="text-left px-4 py-3 text-gray-500 dark:text-gray-300">
+                            Released
+                        </th>
+
+                        <th class="text-left px-4 py-3 text-gray-500 dark:text-gray-300">
+                            Sunset
+                        </th>
+
+                        <th class="text-left px-4 py-3 text-gray-500 dark:text-gray-300">
+                            Migration
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+
+                    <template x-for="item in versions" :key="item.version">
+
+                        <tr>
+
+                            <td class="px-4 py-3 font-semibold text-gray-900 dark:text-white"
+                                x-text="item.version.toUpperCase()">
+                            </td>
+
+                            <td class="px-4 py-3">
+
+                                <span
+                                    class="px-2 py-1 rounded-full text-xs font-medium"
+                                    :class="item.status === 'current'
+                                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                        : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'"
+                                    x-text="item.status"
+                                ></span>
+
+                            </td>
+
+                            <td class="px-4 py-3 text-gray-600 dark:text-gray-300"
+                                x-text="formatDate(item.released_at)">
+                            </td>
+
+                            <td class="px-4 py-3 text-gray-600 dark:text-gray-300"
+                                x-text="item.sunset_at ? formatDate(item.sunset_at) : '—'">
+                            </td>
+
+                            <td class="px-4 py-3">
+
+                                <span
+                                    x-show="item.migration_to"
+                                    class="text-blue-600 dark:text-blue-400 font-medium"
+                                    x-text="item.migration_to ? item.migration_to.toUpperCase() : ''"
+                                ></span>
+
+                                <span
+                                    x-show="!item.migration_to"
+                                    class="text-gray-500 dark:text-gray-400"
+                                >
+                                    —
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    </template>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- Deprecation Headers -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            V1 Deprecation Headers
+        </h2>
+
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            Requests to V1 automatically receive these headers so API clients know that migration is required.
+        </p>
+
+        <div class="space-y-2 font-mono text-sm">
+
+            <div class="px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
+                X-API-Version: v1
+            </div>
+
+            <div class="px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-yellow-700 dark:text-yellow-300">
+                X-API-Status: deprecated
+            </div>
+
+            <div class="px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
+                X-API-Latest-Version: v2
+            </div>
+
+            <div class="px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
+                Sunset: 2027-01-01T00:00:00Z
+            </div>
+
+            <div class="px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-blue-700 dark:text-blue-300">
+                X-API-Migration: /api/v2/products
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Health Check -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+
         <div class="flex items-center justify-between mb-5">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">System Health</h2>
-            <span class="px-3 py-1 rounded-full text-xs font-semibold"
-                  :class="healthStatus === 'ok'
+
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                System Health
+            </h2>
+
+            <span
+                class="px-3 py-1 rounded-full text-xs font-semibold"
+                :class="healthStatus === 'ok'
                     ? 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300'
-                    : (healthStatus === 'error'
-                        ? 'bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300'
-                        : 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300')">
-                <span x-text="healthStatus === 'ok' ? '✓ Healthy' : (healthStatus === 'error' ? '✗ Issues Detected' : 'Checking...')"></span>
+                    : 'bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300'"
+            >
+                <span
+                    x-text="healthStatus === 'ok'
+                        ? '✓ Healthy'
+                        : healthStatus === 'error'
+                            ? '✗ Issues Detected'
+                            : 'Checking...'"
+                ></span>
             </span>
+
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center space-x-4 rounded-lg border border-gray-200 dark:border-gray-700 p-4"
-                 :class="checks.database ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'">
-                <div class="flex-shrink-0">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center"
-                         :class="checks.database ? 'bg-green-100 dark:bg-green-800/40' : 'bg-red-100 dark:bg-red-800/40'">
-                        <svg class="w-5 h-5"
-                             :class="checks.database ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'"
-                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M4 7v10c0 2.21.77 4.25 2 5.66l1-1.73C8.54 19.64 9.55 20 10.5 20h3c.95 0 1.96-.36 2.67-1.07l1 1.73A8.014 8.014 0 0020 17V7a4 4 0 00-4-4h-1a4 4 0 00-3 1.33A4 4 0 009 4H8a4 4 0 00-4 4z" />
-                        </svg>
-                    </div>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Database</p>
-                    <p class="text-sm font-semibold"
-                       :class="checks.database ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'">
-                        <span x-text="checks.database ? 'Connected' : 'Disconnected'"></span>
-                    </p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5" x-text="driver"></p>
-                </div>
+
+            <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Database
+                </p>
+
+                <p
+                    class="font-semibold"
+                    :class="checks.database
+                        ? 'text-green-600 dark:text-green-400'
+                        : 'text-red-600 dark:text-red-400'"
+                    x-text="checks.database ? 'Connected' : 'Disconnected'"
+                ></p>
+
             </div>
 
-            <div class="flex items-center space-x-4 rounded-lg border border-gray-200 dark:border-gray-700 p-4"
-                 :class="checks.cache ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'">
-                <div class="flex-shrink-0">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center"
-                         :class="checks.cache ? 'bg-green-100 dark:bg-green-800/40' : 'bg-red-100 dark:bg-red-800/40'">
-                        <svg class="w-5 h-5"
-                             :class="checks.cache ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'"
-                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M8 9a3 3 0 106 0 3 3 0 01-6 0zM8 9l3 3 3-3" />
-                        </svg>
-                    </div>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Cache</p>
-                    <p class="text-sm font-semibold"
-                       :class="checks.cache ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'">
-                        <span x-text="checks.cache ? 'Working' : 'Failed'"></span>
-                    </p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">File cache driver</p>
-                </div>
+            <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Cache
+                </p>
+
+                <p
+                    class="font-semibold"
+                    :class="checks.cache
+                        ? 'text-green-600 dark:text-green-400'
+                        : 'text-red-600 dark:text-red-400'"
+                    x-text="checks.cache ? 'Working' : 'Failed'"
+                ></p>
+
             </div>
+
         </div>
 
-        <div class="mt-4 rounded-lg bg-gray-50 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-700 p-3">
-            <p class="text-xs font-mono text-gray-500 dark:text-gray-400">
-                API Response:
-                <span class="text-gray-700 dark:text-gray-300" x-text="healthStatus === 'loading' ? 'Checking...' : ('Status: ' + healthStatus + ' | database=' + checks.database + ' cache=' + checks.cache + ' driver=' + driver)"></span>
-            </p>
-        </div>
     </div>
 
-    <!-- API Endpoints Card -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">API Endpoints</h2>
-
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead class="bg-gray-50 dark:bg-gray-700/50">
-                    <tr>
-                        <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-gray-300">Method</th>
-                        <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-gray-300">Endpoint</th>
-                        <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-gray-300">Description</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                        <td class="px-4 py-3"><span class="px-2 py-1 text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded">GET</span></td>
-                        <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-300">/api/health</td>
-                        <td class="px-4 py-3 text-gray-600 dark:text-gray-300">Health check (DB + Cache)</td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                        <td class="px-4 py-3"><span class="px-2 py-1 text-xs font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded">GET</span></td>
-                        <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-300">/api/v1/products</td>
-                        <td class="px-4 py-3 text-gray-600 dark:text-gray-300">List V1 products (name, price, sku, stock)</td>                    </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                        <td class="px-4 py-3"><span class="px-2 py-1 text-xs font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded">GET</span></td>
-                        <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-300">/api/v2/products</td>
-                        <td class="px-4 py-3 text-gray-600 dark:text-gray-300">List V2 products (+ category, is_active, search/filter)</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Version Comparison Card -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Version Comparison</h2>
-
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead class="bg-gray-50 dark:bg-gray-700/50">
-                    <tr>
-                        <th class="text-left px-4 py-2 font-medium text-gray-500 dark:text-gray-300">Field</th>
-                        <th class="text-center px-4 py-2 font-medium text-blue-600 dark:text-blue-400">V1</th>
-                        <th class="text-center px-4 py-2 font-medium text-purple-600 dark:text-purple-400">V2</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    <tr>
-                        <td class="px-4 py-2 text-gray-700 dark:text-gray-300">name</td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2 text-gray-700 dark:text-gray-300">description</td>
-                        <td class="text-center px-4 py-2"><span class="text-red-500">✗</span></td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2 text-gray-700 dark:text-gray-300">price</td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2 text-gray-700 dark:text-gray-300">sku</td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2 text-gray-700 dark:text-gray-300">stock</td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2 text-gray-700 dark:text-gray-300">category</td>
-                        <td class="text-center px-4 py-2"><span class="text-red-500">✗</span></td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2 text-gray-700 dark:text-gray-300">is_active</td>
-                        <td class="text-center px-4 py-2"><span class="text-red-500">✗</span></td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2 text-gray-700 dark:text-gray-300">created_at / updated_at</td>
-                        <td class="text-center px-4 py-2"><span class="text-red-500">✗</span></td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2 text-gray-700 dark:text-gray-300">search &amp; filter</td>
-                        <td class="text-center px-4 py-2"><span class="text-red-500">✗</span></td>
-                        <td class="text-center px-4 py-2"><span class="text-green-500">✓</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 text-center">
-            <div class="text-3xl font-bold text-gray-900 dark:text-white" x-text="productCount"></div>
-            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Total Products</div>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 text-center">
-            <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">v2</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Latest Version</div>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 text-center">
-            <a href="{{ route('products.index') }}"
-               class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm">
-                Manage Products →
-            </a>
-        </div>
-    </div>
 </div>
+
 @endsection
 
+
 @push('scripts')
+
 <script>
+
 function dashboard() {
+
     return {
+
+        currentVersion: 'v2',
+
+        versions: [],
+
+        loadingVersions: true,
+
         healthStatus: 'loading',
-        driver: '-',
-        checks: { database: false, cache: false },
-        productCount: '-',
+
+        checks: {
+            database: false,
+            cache: false
+        },
+
         async init() {
-            await this.fetchHealth();
-            await this.fetchProductCount();
+
+            await Promise.all([
+                this.fetchVersions(),
+                this.fetchHealth()
+            ]);
+
         },
+
+        async fetchVersions() {
+
+            this.loadingVersions = true;
+
+            try {
+
+                const response = await fetch('/api/versions', {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch API versions.');
+                }
+
+                const data = await response.json();
+
+                this.currentVersion = data.current_version;
+
+                this.versions = data.versions || [];
+
+            } catch (error) {
+
+                console.error(error);
+
+                this.versions = [];
+
+            } finally {
+
+                this.loadingVersions = false;
+
+            }
+
+        },
+
         async fetchHealth() {
+
             try {
-                const res = await fetch('/api/health');
-                const data = await res.json();
+
+                const response = await fetch('/api/health', {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
                 this.healthStatus = data.status;
-                this.driver = data.driver || '-';
-                this.checks = data.checks;
-            } catch (e) {
+
+                this.checks = data.checks || {
+                    database: false,
+                    cache: false
+                };
+
+            } catch (error) {
+
                 this.healthStatus = 'error';
+
             }
+
         },
-        async fetchProductCount() {
-            try {
-                const res = await fetch('/api/v2/products?per_page=1');
-                const data = await res.json();
-                this.productCount = data.pagination?.total ?? '-';
-            } catch (e) {
-                this.productCount = '-';
+
+        formatDate(date) {
+
+            if (!date) {
+                return '—';
             }
+
+            return new Date(date).toLocaleDateString(
+                'en-US',
+                {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }
+            );
+
         }
+
     }
+
 }
+
 </script>
+
 @endpush

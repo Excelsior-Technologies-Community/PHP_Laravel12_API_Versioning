@@ -17,20 +17,76 @@
     <!-- Version Switcher -->
     <div class="mb-6">
         <div class="inline-flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-            <button @click="version = 'v1'; fetchProducts()"
-                    :class="version === 'v1' ? 'bg-white dark:bg-gray-800 shadow text-blue-600' : 'text-gray-600 dark:text-gray-300'"
-                    class="px-4 py-2 rounded-md text-sm font-medium transition-all">
-                V1
-            </button>
-            <button @click="version = 'v2'; fetchProducts()"
-                    :class="version === 'v2' ? 'bg-white dark:bg-gray-800 shadow text-purple-600' : 'text-gray-600 dark:text-gray-300'"
-                    class="px-4 py-2 rounded-md text-sm font-medium transition-all">
-                V2
-            </button>
+<button
+    @click="changeVersion('v1')"
+    :class="version === 'v1'
+        ? 'bg-white dark:bg-gray-800 shadow text-blue-600'
+        : 'text-gray-600 dark:text-gray-300'"
+    class="px-4 py-2 rounded-md text-sm font-medium transition-all"
+>
+    V1
+</button>
+
+<button
+    @click="changeVersion('v2')"
+    :class="version === 'v2'
+        ? 'bg-white dark:bg-gray-800 shadow text-purple-600'
+        : 'text-gray-600 dark:text-gray-300'"
+    class="px-4 py-2 rounded-md text-sm font-medium transition-all"
+>
+    V2
+</button>
         </div>
         <span class="ml-3 text-xs text-gray-500 dark:text-gray-400"
               x-text="version === 'v1' ? 'Fields: name, price, sku, stock' : 'Fields: name, price, sku, stock, category, is_active'"></span>
     </div>
+
+    <!-- V1 Deprecation Warning -->
+<div
+    x-show="version === 'v1'"
+    x-cloak
+    class="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg"
+>
+    <div class="flex items-start">
+
+        <svg
+            class="w-5 h-5 text-yellow-500 mt-0.5 mr-3 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01M12 3a9 9 0 100 18 9 9 0 000-18z"
+            />
+        </svg>
+
+        <div>
+
+            <p class="text-sm font-semibold text-yellow-800 dark:text-yellow-200">
+                V1 API is deprecated
+            </p>
+
+            <p class="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                V1 will sunset on January 1, 2027.
+                Please migrate your clients to V2.
+            </p>
+
+            <a
+                href="/api/versions"
+                target="_blank"
+                class="inline-block mt-2 text-sm font-medium underline text-yellow-800 dark:text-yellow-200"
+            >
+                View API version information →
+            </a>
+
+        </div>
+
+    </div>
+</div>
+
 
     <!-- V2 Search & Filter -->
     <div x-show="version === 'v2'" x-transition class="mb-4 flex gap-3">
@@ -158,66 +214,323 @@
 @endsection
 
 @push('scripts')
+
 <script>
 function productsPage() {
+
     return {
+
         version: 'v2',
+
         search: '',
+
         activeFilter: '',
+
         categoryFilter: '',
+
         loading: true,
+
         products: [],
-        pagination: { current_page: 1, last_page: 1, per_page: 15, total: 0 },
+
+        pagination: {
+            current_page: 1,
+            last_page: 1,
+            per_page: 10,
+            total: 0
+        },
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Initialize
+        |--------------------------------------------------------------------------
+        */
 
         async init() {
-            await this.fetchProducts();
+
+            console.log('Products page initialized');
+
+            await this.fetchProducts(1);
+
         },
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Change API Version
+        |--------------------------------------------------------------------------
+        */
+
+        async changeVersion(version) {
+
+            this.version = version;
+
+            this.search = '';
+
+            this.activeFilter = '';
+
+            this.categoryFilter = '';
+
+            await this.fetchProducts(1);
+
+        },
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Fetch Products
+        |--------------------------------------------------------------------------
+        */
 
         async fetchProducts(page = 1) {
-            this.loading = true;
-            let url = `/api/${this.version}/products?page=${page}&per_page=10`;
 
-            if (this.version === 'v2') {
-                if (this.search) url += `&search=${encodeURIComponent(this.search)}`;
-                if (this.activeFilter) url += `&is_active=${this.activeFilter}`;
-                if (this.categoryFilter) url += `&category=${encodeURIComponent(this.categoryFilter)}`;
-            }
+            this.loading = true;
 
             try {
-                const res = await fetch(url, {
-                    headers: { 'Accept': 'application/json' }
-                });
-                const data = await res.json();
-                this.products = data.data;
-                this.pagination = data.pagination;
-            } catch (e) {
+
+                const params = new URLSearchParams();
+
+                params.append(
+                    'page',
+                    page
+                );
+
+                params.append(
+                    'per_page',
+                    10
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | V2 Filters
+                |--------------------------------------------------------------------------
+                */
+
+                if (this.version === 'v2') {
+
+                    if (
+                        this.search &&
+                        this.search.trim() !== ''
+                    ) {
+
+                        params.append(
+                            'search',
+                            this.search.trim()
+                        );
+
+                    }
+
+
+                    if (
+                        this.activeFilter !== ''
+                    ) {
+
+                        params.append(
+                            'is_active',
+                            this.activeFilter
+                        );
+
+                    }
+
+
+                    if (
+                        this.categoryFilter !== ''
+                    ) {
+
+                        params.append(
+                            'category',
+                            this.categoryFilter
+                        );
+
+                    }
+
+                }
+
+
+                const url =
+                    `/api/${this.version}/products?${params.toString()}`;
+
+
+                console.log(
+                    'Fetching products:',
+                    url
+                );
+
+
+                const response = await fetch(
+                    url,
+                    {
+                        method: 'GET',
+
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    }
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `HTTP error: ${response.status}`
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    'API response:',
+                    data
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Set Products
+                |--------------------------------------------------------------------------
+                */
+
+                this.products =
+                    Array.isArray(data.data)
+                        ? data.data
+                        : [];
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Set Pagination
+                |--------------------------------------------------------------------------
+                */
+
+                this.pagination =
+                    data.pagination || {
+                        current_page: 1,
+                        last_page: 1,
+                        per_page: 10,
+                        total: this.products.length
+                    };
+
+
+            } catch (error) {
+
+                console.error(
+                    'Unable to load products:',
+                    error
+                );
+
                 this.products = [];
-                this.pagination = { current_page: 1, last_page: 1, per_page: 10, total: 0 };
+
+                this.pagination = {
+                    current_page: 1,
+                    last_page: 1,
+                    per_page: 10,
+                    total: 0
+                };
+
+
+            } finally {
+
+                this.loading = false;
+
             }
-            this.loading = false;
+
         },
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Format Price
+        |--------------------------------------------------------------------------
+        */
 
         formatPrice(price) {
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
+
+            return new Intl.NumberFormat(
+                'en-US',
+                {
+                    style: 'currency',
+                    currency: 'USD'
+                }
+            ).format(
+                Number(price || 0)
+            );
+
         },
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Delete Product
+        |--------------------------------------------------------------------------
+        */
+
         async deleteProduct(id) {
-            if (!confirm('Are you sure you want to delete this product?')) return;
+
+            if (
+                !confirm(
+                    'Are you sure you want to delete this product?'
+                )
+            ) {
+
+                return;
+
+            }
+
 
             try {
-                await fetch(`/api/${this.version}/products/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    }
-                });
-                await this.fetchProducts(this.pagination.current_page);
-            } catch (e) {
-                alert('Failed to delete product.');
+
+                const response =
+                    await fetch(
+                        `/api/${this.version}/products/${id}`,
+                        {
+                            method: 'DELETE',
+
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With':
+                                    'XMLHttpRequest'
+                            }
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `HTTP error: ${response.status}`
+                    );
+
+                }
+
+
+                await this.fetchProducts(
+                    this.pagination.current_page
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    'Delete error:',
+                    error
+                );
+
+                alert(
+                    'Failed to delete product.'
+                );
+
             }
+
         }
-    }
+
+    };
+
 }
 </script>
+
 @endpush
