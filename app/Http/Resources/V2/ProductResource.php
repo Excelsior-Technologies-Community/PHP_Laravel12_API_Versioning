@@ -11,15 +11,26 @@ class ProductResource extends JsonResource
     {
         return [
             'id' => $this->id,
+
             'name' => $this->name,
+
             'description' => $this->description,
-            'price' => (float) $this->price,
+
+            'price' => $this->price,
+
             'sku' => $this->sku,
-            'stock' => (int) $this->stock,
+
+            'stock' => $this->stock,
+
             'category' => $this->category,
-            'is_active' => (bool) $this->is_active,
-            'created_at' => $this->created_at->toIso8601String(),
-            'updated_at' => $this->updated_at->toIso8601String(),
+
+            'is_active' => $this->is_active,
+
+            'is_featured' => $this->is_featured,
+
+            'created_at' => $this->created_at,
+
+            'updated_at' => $this->updated_at,
         ];
     }
 }
